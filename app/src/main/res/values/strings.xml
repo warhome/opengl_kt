@@ -1,0 +1,31 @@
+<resources>
+    <string name="app_name">Huesapp</string>
+    <string name="open">open</string>
+    <string name="reset_btn_text">reset</string>
+    <string name="info_btn_text">info</string>
+    <string name="emojiContentDescr">emoji</string>
+    <string name="logo">Hues</string>
+    <string name="pick_option"/>
+    <string name="open_from_message">Open from</string>
+    <string name="filters">Filters</string>
+    <string name="presets">Presets</string>
+    <string name="autofix">Autofix</string>
+    <string name="descriptor">descr</string>
+    <string name="brightness">Brightness</string>
+    <string name="temperature">Temperature</string>
+    <string name="etc">etc</string>
+    <string-array name="options">
+        <item>camera</item>
+        <item>gallery</item>
+    </string-array>
+    <string-array name="preset_array">
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+        <item>6</item>
+        <item>7</item>
+        <item>8</item>
+    </string-array>
+</resources>

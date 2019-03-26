@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+            android:id="@+id/navigation_filters"
+            android:icon="@drawable/tune"
+            android:title="@string/filters"/>
+    <item
+            android:id="@+id/navigation_presets"
+            android:icon="@drawable/creation"
+            android:title="@string/presets"/>
+    <item
+            android:id="@+id/navigation_etc"
+            android:icon="@drawable/creation"
+            android:title="@string/etc"/>
+</menu>
