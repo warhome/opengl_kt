@@ -6,48 +6,37 @@ import com.zomato.photofilters.FilterPack
 
 class PresetHelper {
     companion object {
-        private var presetList = ArrayList<Preset>()
+        private var presetList = ArrayList<Transfer>()
 
-        fun getPresetList(): ArrayList<Preset> {
+        fun getPresetList(): ArrayList<Transfer> {
             return presetList
         }
 
         fun createPreviewPreset(lowQualityBitmap: Bitmap, context: Context) {
-
             if (!presetList.isEmpty()) presetList.clear()
 
             var workedBitmap = lowQualityBitmap.copy(lowQualityBitmap.config, true)
-            presetList.add(Preset("Adele", FilterPack.getAdeleFilter(context).processFilter(workedBitmap)))
-
+            presetList.add(Transfer("Adele", FilterPack.getAdeleFilter(context).processFilter(workedBitmap)))
             workedBitmap = lowQualityBitmap.copy(lowQualityBitmap.config, true)
-            presetList.add(Preset("Amazon", FilterPack.getAmazonFilter(context).processFilter(workedBitmap)))
-
+            presetList.add(Transfer("Amazon", FilterPack.getAmazonFilter(context).processFilter(workedBitmap)))
             workedBitmap = lowQualityBitmap.copy(lowQualityBitmap.config, true)
-            presetList.add(Preset("April", FilterPack.getAprilFilter(context).processFilter(workedBitmap)))
-
+            presetList.add(Transfer("April", FilterPack.getAprilFilter(context).processFilter(workedBitmap)))
             workedBitmap = lowQualityBitmap.copy(lowQualityBitmap.config, true)
-            presetList.add(Preset("Audrey", FilterPack.getAudreyFilter(context).processFilter(workedBitmap)))
-
+            presetList.add(Transfer("Audrey", FilterPack.getAudreyFilter(context).processFilter(workedBitmap)))
             workedBitmap = lowQualityBitmap.copy(lowQualityBitmap.config, true)
-            presetList.add(Preset("AweStruckVibe", FilterPack.getAweStruckVibeFilter(context).processFilter(workedBitmap)))
-
+            presetList.add(Transfer("AweStruckVibe", FilterPack.getAweStruckVibeFilter(context).processFilter(workedBitmap)))
             workedBitmap = lowQualityBitmap.copy(lowQualityBitmap.config, true)
-            presetList.add(Preset("BlueMess", FilterPack.getBlueMessFilter(context).processFilter(workedBitmap)))
-
+            presetList.add(Transfer("BlueMess", FilterPack.getBlueMessFilter(context).processFilter(workedBitmap)))
             workedBitmap = lowQualityBitmap.copy(lowQualityBitmap.config, true)
-            presetList.add(Preset("Clarendon", FilterPack.getClarendon(context).processFilter(workedBitmap)))
-
+            presetList.add(Transfer("Clarendon", FilterPack.getClarendon(context).processFilter(workedBitmap)))
             workedBitmap = lowQualityBitmap.copy(lowQualityBitmap.config, true)
-            presetList.add(Preset("Cruz", FilterPack.getCruzFilter(context).processFilter(workedBitmap)))
-
+            presetList.add(Transfer("Cruz", FilterPack.getCruzFilter(context).processFilter(workedBitmap)))
             workedBitmap = lowQualityBitmap.copy(lowQualityBitmap.config, true)
-            presetList.add(Preset("Haan", FilterPack.getHaanFilter(context).processFilter(workedBitmap)))
-
+            presetList.add(Transfer("Haan", FilterPack.getHaanFilter(context).processFilter(workedBitmap)))
             workedBitmap = lowQualityBitmap.copy(lowQualityBitmap.config, true)
-            presetList.add(Preset("LimeStutter", FilterPack.getLimeStutterFilter(context).processFilter(workedBitmap)))
-
+            presetList.add(Transfer("LimeStutter", FilterPack.getLimeStutterFilter(context).processFilter(workedBitmap)))
             workedBitmap = lowQualityBitmap.copy(lowQualityBitmap.config, true)
-            presetList.add(Preset("Mars", FilterPack.getMarsFilter(context).processFilter(workedBitmap)))
+            presetList.add(Transfer("Mars", FilterPack.getMarsFilter(context).processFilter(workedBitmap)))
         }
     }
 }

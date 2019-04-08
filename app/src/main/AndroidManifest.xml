@@ -6,6 +6,7 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <application
             android:allowBackup="true"
@@ -17,10 +18,15 @@
         <activity android:name=".view.activity.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
-
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
+        <service
+                android:name="ai.fritz.core.FritzCustomModelService"
+                android:exported="true"
+                android:permission="android.permission.BIND_JOB_SERVICE" />
+        <meta-data
+                android:name="fritz_api_key"
+                android:value="202ac2db674f407fa7b164a56828a61d" />
     </application>
-
 </manifest>

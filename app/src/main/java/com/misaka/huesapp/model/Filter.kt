@@ -1,6 +1,7 @@
 package com.misaka.huesapp.model
 
 class Filter(name: String, param1: Float) {
+
     var name: String? = name
     var params: MutableList<Float> = ArrayList()
 

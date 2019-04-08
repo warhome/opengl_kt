@@ -23,7 +23,8 @@ class FilterFragment: Fragment(), FilterContract.View, SeekBar.OnSeekBarChangeLi
     var presenter: FilterPresenter? = null
 
     companion object {
-        fun newInstance(): FilterFragment = FilterFragment()
+        fun newInstance(): FilterFragment =
+            FilterFragment()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {

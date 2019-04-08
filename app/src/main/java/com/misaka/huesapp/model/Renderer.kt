@@ -8,6 +8,7 @@ import java.io.IOException
 import java.io.OutputStream
 import java.util.*
 
+// TODO: Убрать класс Renderer?
 class Renderer {
     companion object {
         private var workedImage: Bitmap? = null

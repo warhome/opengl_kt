@@ -1,5 +1,13 @@
 package com.misaka.huesapp.view.activity
 
+import ai.fritz.core.Fritz
+import ai.fritz.core.FritzOnDeviceModel
+import ai.fritz.fritzvisionstylepaintings.PaintingStyles
+import ai.fritz.vision.FritzVision
+import ai.fritz.vision.FritzVisionImage
+import ai.fritz.vision.styletransfer.FritzStyleResolution
+import ai.fritz.vision.styletransfer.FritzVisionStylePredictorOptions
+
 import android.app.Activity
 import android.app.ActivityManager
 import android.content.Context
@@ -13,6 +21,7 @@ import android.provider.MediaStore
 import android.support.v4.app.Fragment
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
+import android.util.Size
 import android.view.View
 import android.widget.ImageView
 import android.widget.Toast
@@ -22,12 +31,13 @@ import com.misaka.huesapp.contract.MainContract
 import com.misaka.huesapp.model.Filter
 import com.misaka.huesapp.model.PresetHelper
 import com.misaka.huesapp.model.Renderer
+import com.misaka.huesapp.model.StyleHelper
 import com.misaka.huesapp.opengl.GLRenderer
 import com.misaka.huesapp.presenter.MainPresenter
 import com.misaka.huesapp.view.Base
 import com.misaka.huesapp.view.BaseImpl
 import com.misaka.huesapp.view.ResizeUtils
-import com.misaka.huesapp.view.fragment.EtcFragment
+import com.misaka.huesapp.view.fragment.StyleFragment
 import com.misaka.huesapp.view.fragment.FilterFragment
 import com.misaka.huesapp.view.fragment.PresetFragment
 import com.zomato.photofilters.FilterPack
@@ -35,9 +45,10 @@ import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.tool_bar.*
 import java.util.*
 
+
 class MainActivity : AppCompatActivity(), MainContract.View {
 
-    init { System.loadLibrary("NativeImageProcessor") }
+    init { System.loadLibrary(AppConstant.NATIVE_LIBRATY_NAME) }
 
     // Delegate
     class Del(b: Base) : Base by b
@@ -45,13 +56,13 @@ class MainActivity : AppCompatActivity(), MainContract.View {
     private var presenter: MainPresenter? = null
     private var isFabMenuOpen: Boolean = false
     private var isGlSurfaceViewSet: Boolean = false
-
     private var glSurfaceView: GLSurfaceView? = null
     private var glRenderer: GLRenderer? = null
     private var bitmap: Bitmap? = null
     private var imageView: ImageView? = null
+    private var fritzModel: FritzOnDeviceModel? = null
 
-    private val path: String = Environment.getExternalStorageDirectory().absolutePath + "/Huesapp/"
+    private val path: String = Environment.getExternalStorageDirectory().absolutePath
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -59,13 +70,17 @@ class MainActivity : AppCompatActivity(), MainContract.View {
         setContentView(R.layout.activity_main)
         setSupportActionBar(tool_bar as Toolbar?)
 
+        // Init fritz api
+        Fritz.configure(this, AppConstant.FRITZ_API_KEY)
+
+        StyleHelper.createStylePreview(this)
+
         presenter = MainPresenter(this)
     }
 
     override fun init() {
         // Open image button
-        open_button.setOnClickListener {
-            presenter?.openImage()
+        open_button.setOnClickListener { presenter?.openImage()
         }
 
         // Check button
@@ -106,7 +121,7 @@ class MainActivity : AppCompatActivity(), MainContract.View {
                     return@setOnNavigationItemSelectedListener true
                 }
                 R.id.navigation_etc -> {
-                    openFragment(EtcFragment.newInstance())
+                    openFragment(StyleFragment.newInstance())
                     return@setOnNavigationItemSelectedListener true
                 }
             }
@@ -171,6 +186,7 @@ class MainActivity : AppCompatActivity(), MainContract.View {
 
     private fun createGLSurfaceView() {
         if (isGlSurfaceViewSet) glSurfaceView?.visibility = View.GONE else isGlSurfaceViewSet = true
+
         glSurfaceView = GLSurfaceView(applicationContext)
         glSurfaceView?.setEGLContextClientVersion(2)
         glRenderer = GLRenderer(applicationContext)
@@ -184,6 +200,7 @@ class MainActivity : AppCompatActivity(), MainContract.View {
             Renderer.getImage()!!.width.toFloat(),
             applicationContext
         )
+
         gl_layout.addView(glSurfaceView)
     }
 
@@ -217,9 +234,7 @@ class MainActivity : AppCompatActivity(), MainContract.View {
         if (Del(BaseImpl(this, this)).checkWriteDataPermission()) {
             Renderer.saveImage(glRenderer?.bmp!!, path,100)
         }
-        else {
-
-        }
+        else { /*pass?*/}
     }
 
     // TODO: Use FileProvider instead of saving(?)(API >= 24)
@@ -229,30 +244,61 @@ class MainActivity : AppCompatActivity(), MainContract.View {
             val intent = Intent(Intent.ACTION_SEND)
             intent.type = "image/jpeg"
             intent.putExtra(Intent.EXTRA_STREAM, uri)
-            startActivity(Intent.createChooser(intent, "Share it!"))
+            startActivity(Intent.createChooser(intent, "Share"))
         }
     }
 
+    // TODO: Вынести из MainActivity
     fun setPreset(presetID: Int){
         var presets = FilterPack.getFilterPack(this)
         bitmap = glRenderer?.bmp
         when(presetID){
-            0 -> FilterPack.getAdeleFilter(this).processFilter(bitmap)
-            1 -> FilterPack.getAmazonFilter(this).processFilter(bitmap)
-            2 -> FilterPack.getAprilFilter(this).processFilter(bitmap)
-            3 -> FilterPack.getAudreyFilter(this).processFilter(bitmap)
-            4 -> FilterPack.getAweStruckVibeFilter(this).processFilter(bitmap)
-            5 -> FilterPack.getBlueMessFilter(this).processFilter(bitmap)
-            6 -> FilterPack.getClarendon(this).processFilter(bitmap)
-            7 -> FilterPack.getCruzFilter(this).processFilter(bitmap)
-            8 -> FilterPack.getHaanFilter(this).processFilter(bitmap)
-            9 -> FilterPack.getLimeStutterFilter(this).processFilter(bitmap)
+            0  -> FilterPack.getAdeleFilter(this).processFilter(bitmap)
+            1  -> FilterPack.getAmazonFilter(this).processFilter(bitmap)
+            2  -> FilterPack.getAprilFilter(this).processFilter(bitmap)
+            3  -> FilterPack.getAudreyFilter(this).processFilter(bitmap)
+            4  -> FilterPack.getAweStruckVibeFilter(this).processFilter(bitmap)
+            5  -> FilterPack.getBlueMessFilter(this).processFilter(bitmap)
+            6  -> FilterPack.getClarendon(this).processFilter(bitmap)
+            7  -> FilterPack.getCruzFilter(this).processFilter(bitmap)
+            8  -> FilterPack.getHaanFilter(this).processFilter(bitmap)
+            9  -> FilterPack.getLimeStutterFilter(this).processFilter(bitmap)
             10 -> FilterPack.getMarsFilter(this).processFilter(bitmap)
-
         }
         imageView = ImageView(this)
         imageView!!.setImageBitmap(bitmap)
         gl_layout.addView(imageView)
     }
 
+    // TODO: Вынести из MainActivity
+    fun setStyle(styleID: Int) {
+        when(styleID){
+            0  -> fritzModel = PaintingStyles.BICENTENNIAL_PRINT
+            1  -> fritzModel = PaintingStyles.FEMMES
+            2  -> fritzModel = PaintingStyles.HEAD_OF_CLOWN
+            3  -> fritzModel = PaintingStyles.HORSES_ON_SEASHORE
+            4  -> fritzModel = PaintingStyles.KALEIDOSCOPE
+            5  -> fritzModel = PaintingStyles.PINK_BLUE_RHOMBUS
+            6  -> fritzModel = PaintingStyles.POPPY_FIELD
+            7  -> fritzModel = PaintingStyles.RITMO_PLASTICO
+            8  -> fritzModel = PaintingStyles.STARRY_NIGHT
+            9  -> fritzModel = PaintingStyles.THE_SCREAM
+            10 -> fritzModel = PaintingStyles.THE_TRAIL
+        }
+
+        val options =  FritzVisionStylePredictorOptions.Builder()
+            .imageResolution(glRenderer?.bmp!!.width, glRenderer?.bmp!!.height)
+            .build()
+
+        val predictor = FritzVision.StyleTransfer.getPredictor(fritzModel, options)
+        val fritzImage = FritzVisionImage.fromBitmap(glRenderer?.bmp)
+        val fritzStyleResult = predictor.predict(fritzImage)
+
+        bitmap = fritzStyleResult.toBitmap(Size(glRenderer?.bmp!!.width, glRenderer?.bmp!!.height))
+
+        imageView = ImageView(this)
+        imageView!!.setImageBitmap(bitmap)
+
+        gl_layout.addView(imageView)
+    }
 }

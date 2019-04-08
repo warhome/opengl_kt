@@ -9,9 +9,8 @@ class FilterHelper {
             return false
         }
         fun findFilterId(filters: ArrayList<Filter>?, filterName: String): Filter {
-            val list = filters
-            list?.removeIf { f -> f.name != filterName }
-            return list!![0]
+            filters?.removeIf { f -> f.name != filterName }
+            return filters!![0]
         }
         fun deleteElement(filters: MutableList<Filter>, name: String) {
             filters.removeIf { f -> f.name == name }
